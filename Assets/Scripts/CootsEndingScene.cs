@@ -16,6 +16,7 @@ public class CootsEndingScene : MonoBehaviour
     public AnimationCurve easeOutCurve;
     public AnimationCurve standardEaseCurve;
     public Volume brightOutPost;
+    public AudioSource cootsSong;
 
     public float talkDuration = 1.5f;
 
@@ -56,23 +57,7 @@ public class CootsEndingScene : MonoBehaviour
     IEnumerator CryTears()
     {
 
-        tears[0].tearActive= true;
-
-        yield return new WaitForSeconds(1);
-        tears[1].tearActive = true;
-        yield return new WaitForSeconds(1.5f);
-        tears[2].tearActive = true;
-        yield return new WaitForSeconds(.5f);
-        tears[3].tearActive = true;
-
-        yield return new WaitForSeconds(2f);
-        tears[4].tearActive = true;
-        yield return new WaitForSeconds(1);
-        tears[5].tearActive = true;
-        yield return new WaitForSeconds(.8f);
-        tears[6].tearActive = true;
-        yield return new WaitForSeconds(1.7f);
-        tears[7].tearActive = true;
+        tears[0].tearActive = true;
 
         yield break;
     }
@@ -167,7 +152,7 @@ public class CootsEndingScene : MonoBehaviour
         while (clock < 1)
         {
             clock += Time.deltaTime * .15f;
-            RenderSettings.fogEndDistance = Mathf.Lerp(1, 4, easeCurve.Evaluate(clock));
+            RenderSettings.fogEndDistance = Mathf.Lerp(1, 4.5f, easeCurve.Evaluate(clock));
 
             yield return null;
         }
@@ -179,8 +164,9 @@ public class CootsEndingScene : MonoBehaviour
 
     IEnumerator RunScene()
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1);
         blackoutScreen.SetActive(false);
+        cootsSong.Play();
         StartCoroutine(MonkeyArc());
 
         yield return new WaitForSeconds(29);
@@ -219,16 +205,15 @@ public class CootsEndingScene : MonoBehaviour
         yield return new WaitForSeconds(.1f);
         textLines[2].SetActive(true);
 
-        yield return new WaitForSeconds(2);
-        //StartCoroutine(CryTears());
+        yield return new WaitForSeconds(4);
 
-        yield return new WaitForSeconds(2);
 
         textLines[2].SetActive(false);
 
         yield return new WaitForSeconds(1);
         StartCoroutine(FlapCootsMouth(1.5f));
         textLines[3].SetActive(true);
+        StartCoroutine(CryTears());
 
         yield return new WaitForSeconds(4);
 

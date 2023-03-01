@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MysteryBoxManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class MysteryBoxManager : MonoBehaviour
     public GameObject[] itemObjects;
     public bool itemCurrentlyHeld = false;
     public bool itemCurrentlyInUse = false;
+    int keynumber = 0;
 
     public AudioSource useItemAudio;
     public AudioSource towerAudio;
@@ -17,19 +19,21 @@ public class MysteryBoxManager : MonoBehaviour
     TowerBehavior towerBehavior;
     RollTheBall rollTheBall;
     WindUpKeyBehavior windUpKeyBehavior;
-
+    FlashlightZoneBehavior flashlightZoneBehavior;
 
     [Header("Prefabs")]
     public GameObject windUpKeyPrefab;
     public Transform _windUpKeyTarget;
 
     public bool flashlightOn = false;
+    bool towerPowerUpAchieved = false;
 
     private void Start()
     {
         towerBehavior = GameObject.FindObjectOfType<TowerBehavior>();
         rollTheBall = GameObject.FindObjectOfType<RollTheBall>();
         windUpKeyBehavior = GameObject.FindObjectOfType<WindUpKeyBehavior>();
+        flashlightZoneBehavior = FindObjectOfType<FlashlightZoneBehavior>();
     }
 
 
@@ -41,6 +45,12 @@ public class MysteryBoxManager : MonoBehaviour
             if (Input.GetMouseButtonDown(1))
             {
                 UseHeldItem();
+            }
+
+            if(currentItemID == 2)
+            {
+
+                towerPowerUpAchieved = true;
             }
         }
     }
@@ -65,30 +75,53 @@ public class MysteryBoxManager : MonoBehaviour
         useItemAudio.Play();
         itemCurrentlyInUse = true;
 
+        if(towerPowerUpAchieved)
+        {
+
+
+            towerBehavior.CalLTower();
+            towerAudio.Play();
+
+            return;
+        }
+
         //FLASHLIGHT
         if (currentItemID == 0)
-        {
-            flashlightOn = true;
-            itemObjects[0].SetActive(true);
+            {
+                flashlightOn = true;
+            flashlightZoneBehavior.triggered = false;
+                itemObjects[0].SetActive(true);
 
 
 
-        }
+            }
 
-        if(currentItemID == 1)
-        {
+            if (currentItemID == 1)
+            {
 
-            float keyDuration = 3;
-            rollTheBall.CalculateBoost(1500, keyDuration);
-            windUpKeyBehavior = Instantiate(windUpKeyPrefab).GetComponent<WindUpKeyBehavior>();
-            windUpKeyBehavior.windUpKeyTarget = _windUpKeyTarget;
+                float keyDuration = 2.5f;
+                rollTheBall.CalculateBoost(1500, keyDuration);
+                windUpKeyBehavior = Instantiate(windUpKeyPrefab).GetComponent<WindUpKeyBehavior>();
+            windUpKeyBehavior.mysteryBoxManager = this;
+                windUpKeyBehavior.windUpKeyTarget = _windUpKeyTarget;
+            windUpKeyBehavior.SetupFirstPosition();
 
 
+                windUpKeyBehavior.duration = keyDuration;
+                windUpKeyBehavior.StartBoost();
+                CloseItem();
+            keynumber += 1;
 
-            windUpKeyBehavior.duration = keyDuration;
-            windUpKeyBehavior.StartBoost();
-            CloseItem();
-        }
+            if (keynumber >= 2) {
+                currentItemID = 0;
+            }
+            else
+            {
+                currentItemID = 1;
+            }
+            }
+
+        
 
         if(currentItemID == 2)
         {

@@ -103,6 +103,8 @@ MonoBehaviour:
   duration: 4
   firstSound: {fileID: -8666274097100430834}
   secondSound: {fileID: 8023005995671288073}
+  mysteryBoxManager: {fileID: 0}
+  meshRenderer: {fileID: 0}
   active: 0
 --- !u!54 &8028832636281366611
 Rigidbody:
@@ -117,9 +119,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 2
+  m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!82 &-8666274097100430834
 AudioSource:
   m_ObjectHideFlags: 0

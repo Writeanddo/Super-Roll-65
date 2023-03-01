@@ -35,6 +35,7 @@ public class HookConnectionBehavior : MonoBehaviour
 
         if (!hooked)
         {
+            timeKeeperBehavior.hookSound.Play();
             ballRb = other.transform.parent.GetComponent<Rigidbody>();
 
             connectionJoint = ballRb.gameObject.AddComponent<FixedJoint>();

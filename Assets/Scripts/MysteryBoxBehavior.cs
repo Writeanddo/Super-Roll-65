@@ -26,6 +26,7 @@ public class MysteryBoxBehavior : MonoBehaviour
     Vector3 defaultScale;
 
     bool emptyBox = false;
+    public bool towerBox = false;
 
 
 
@@ -49,6 +50,11 @@ public class MysteryBoxBehavior : MonoBehaviour
             if (!itemRoulette.rouletteOn && !mysteryBoxManager.itemCurrentlyHeld)
             {
                 emptyBox = false;
+                if (towerBox)
+                {
+
+                    mysteryBoxManager.currentItemID = 2;
+                }
                 itemRoulette.rouletteOn = true;
             }
             else

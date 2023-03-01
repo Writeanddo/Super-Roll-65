@@ -12,7 +12,7 @@ public class TearBehavior : MonoBehaviour
 
     bool tearFormed = false;
     public bool tearActive = false;
-    float sizeRandomizer = 1;
+    float sizeRandomizer = .7f;
 
     float clock = 0;
     // Start is called before the first frame update
@@ -20,7 +20,7 @@ public class TearBehavior : MonoBehaviour
     {
         targetScale = transform.localScale;
         transform.localScale = Vector3.zero;
-        sizeRandomizer = Random.Range(.6f, 1f);
+       // sizeRandomizer = Random.Range(.6f, 1f);
         transform.position = tearDropStart.position;
     }
 
@@ -32,7 +32,7 @@ public class TearBehavior : MonoBehaviour
             
             if (!tearFormed)
             {
-                clock += Time.deltaTime * .75f;
+                clock += Time.deltaTime * .5f;
                 GrowTear();
             }
             else

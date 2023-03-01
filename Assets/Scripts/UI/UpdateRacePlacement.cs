@@ -15,6 +15,8 @@ public class UpdateRacePlacement : MonoBehaviour
 
     [SerializeField]
 
+    public Font unicodeFont;
+    public Font regularFont;
     public Text placeText;
 
     float updateInterval = 1;
@@ -57,6 +59,15 @@ public class UpdateRacePlacement : MonoBehaviour
 
                 placeText.text = places[i];
 
+                if(i == 0 || i == 10 || i == 11 || i == 12 || i == 14 || i == 15)
+                {
+                    placeText.font = unicodeFont;
+                }
+                else
+                {
+                    placeText.font = regularFont;
+                }
+
             }
 
             if(playerZPosition > -70f && playerZPosition < 90)
@@ -65,21 +76,25 @@ public class UpdateRacePlacement : MonoBehaviour
                 if(Mathf.Abs(playerXPosition) > 100)
                 {
                     placeText.text = places[9];
+                    placeText.font = regularFont;
 
                 }
                 if (Mathf.Abs(playerXPosition) > 200)
                 {
                     placeText.text = places[14];
+                    placeText.font = unicodeFont;
 
                 }
                 if (Mathf.Abs(playerXPosition) > 300)
                 {
                     placeText.text = places[0];
+                    placeText.font = unicodeFont;
 
                 }
                 if (Mathf.Abs(playerXPosition) > 300)
                 {
                     placeText.text = places[12];
+                    placeText.font = unicodeFont;
 
                 }
 

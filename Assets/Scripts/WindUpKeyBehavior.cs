@@ -17,11 +17,14 @@ public class WindUpKeyBehavior : MonoBehaviour
 
     public AudioSource firstSound;
     public AudioSource secondSound;
+    public MysteryBoxManager mysteryBoxManager;
+    public MeshRenderer meshRenderer;
 
 
     public bool active = false;
+    bool firstFrame = true;
 
-
+    int frameCount;
 
     // Start is called before the first frame update
     void Awake()
@@ -32,8 +35,12 @@ public class WindUpKeyBehavior : MonoBehaviour
         rb =GetComponent<Rigidbody>();
 
 
-        
+
+
+
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -49,31 +56,54 @@ public class WindUpKeyBehavior : MonoBehaviour
 
     }
 
+    public void SetupFirstPosition()
+    {
+        rb.position = windUpKeyTarget.position; 
+    }
+
+
     void FixedUpdate()
     {
-        if (active)
-        {
-            rb.MovePosition(windUpKeyTarget.position);
 
-            rb.MoveRotation(player.rotation);
-
-            clock += Time.deltaTime;
-
-            if(clock > duration)
+            if (active)
             {
 
-                active = false;
-                ShedKey();
+            if (frameCount == 5)
+            {
+                rb.interpolation = RigidbodyInterpolation.Extrapolate;
+            }
+
+
+                rb.MovePosition(windUpKeyTarget.position);
+
+                rb.MoveRotation(player.rotation);
+
+                clock += Time.deltaTime;
+
+                if (clock > duration)
+                {
+
+                    active = false;
+                    ShedKey();
+
+                }
+
+
+            frameCount += 1;
 
             }
 
-        }
+        
+        
 
     }
 
     void ShedKey()
     {
+        Debug.Log("SHED KEY CALLED");
+        active = false;
         rb.useGravity = true;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.isKinematic = false;
         boxCollider.enabled = true;
         StartCoroutine(SleepKey());

@@ -17,7 +17,7 @@ public class MonkeyNeedsSaving : MonoBehaviour
 
             timekeeperBehavior.monkeyInZone1 = true;
 
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("PlayerMonkeyDetection"))
             {
                 timekeeperBehavior.playerInZone1 = true;
             }
@@ -28,7 +28,7 @@ public class MonkeyNeedsSaving : MonoBehaviour
 
             timekeeperBehavior.monkeyInZone2 = true;
 
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("PlayerMonkeyDetection"))
             {
                 timekeeperBehavior.playerInZone2 = true;
             }
@@ -39,9 +39,21 @@ public class MonkeyNeedsSaving : MonoBehaviour
 
             timekeeperBehavior.monkeyInZone3 = true;
 
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("PlayerMonkeyDetection"))
             {
                 timekeeperBehavior.playerInZone3 = true;
+            }
+        }
+
+
+        if (zone == 4)
+        {
+
+
+            if (other.CompareTag("PlayerMonkeyDetection"))
+            {
+                Debug.Log("ENTERED ZONE 4");
+                timekeeperBehavior.playerInZone4 = true;
             }
         }
 
@@ -56,7 +68,7 @@ public class MonkeyNeedsSaving : MonoBehaviour
         monkeyCounter--;
         if (zone == 1)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("PlayerMonkeyDetection"))
             {
 
                 timekeeperBehavior.playerInZone1 = false;
@@ -73,7 +85,7 @@ public class MonkeyNeedsSaving : MonoBehaviour
         if (zone == 2)
         {
 
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("PlayerMonkeyDetection"))
             {
 
                 timekeeperBehavior.playerInZone2 = false;
@@ -90,7 +102,7 @@ public class MonkeyNeedsSaving : MonoBehaviour
         if (zone == 3)
         {
 
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("PlayerMonkeyDetection"))
             {
 
                 timekeeperBehavior.playerInZone3 = false;
@@ -102,6 +114,18 @@ public class MonkeyNeedsSaving : MonoBehaviour
                 timekeeperBehavior.monkeyInZone3 = false;
 
             }
+        }
+
+        if (zone == 4)
+        {
+
+            if (other.CompareTag("PlayerMonkeyDetection"))
+            {
+                Debug.Log("EXIT ZONE 4");
+                timekeeperBehavior.playerInZone4 = false;
+            }
+
+
         }
 
 

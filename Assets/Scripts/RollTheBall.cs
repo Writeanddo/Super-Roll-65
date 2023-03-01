@@ -27,6 +27,9 @@ public class RollTheBall : MonoBehaviour
     float boostIncrements;
     public float velocityReading = 0;
 
+    public float wasdPushForce = 3;
+
+
     float chargeAmount;
 
     public Image chargeAmountUI;
@@ -171,6 +174,12 @@ public class RollTheBall : MonoBehaviour
         }
     }
 
+    void CalculateVelocityModifier()
+    {
+
+
+    }
+
     void ApplyCharge()
     {
         // Charge Modifier to Reduce ability to add charge at very fast speeds
@@ -211,7 +220,15 @@ public class RollTheBall : MonoBehaviour
     void ApplyForce()
     {
 
-            ballRb.AddForce(moveDirection * 1.25f);
+        float chargeModifier = 1;
+        if (velocityReading > 17)
+        {
+            float mathVelocity = velocityReading - 15;
+
+            chargeModifier = 1 - (Mathf.Clamp01(mathVelocity / 5));
+        }
+
+        ballRb.AddForce(moveDirection * wasdPushForce * 50 * Time.fixedDeltaTime * chargeModifier);
         
     }
 

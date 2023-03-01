@@ -24,6 +24,7 @@ public class OpeningCutsceneSequence : MonoBehaviour
         uiManager = GameObject.FindObjectOfType<UIManager>();
         rollTheBall= GameObject.FindObjectOfType<RollTheBall>();
         rollTheBall.inputActive = false;
+        titleCards[7].SetActive(true);
     }
 
     // Update is called once per frame
@@ -65,14 +66,14 @@ public class OpeningCutsceneSequence : MonoBehaviour
         yield return new WaitForSeconds(1);
         titleCards[3].SetActive(true);
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2.65f);
 
         titleCards[3].SetActive(false);
 
         yield return new WaitForSeconds(1);
 
         titleCards[4].SetActive(true);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(5.1f);
 
         titleCards[4].SetActive(false);
 

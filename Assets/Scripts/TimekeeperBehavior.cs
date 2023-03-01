@@ -7,6 +7,7 @@ public class TimekeeperBehavior : MonoBehaviour
 {
 
     Transform _player;
+    Rigidbody rb;
     float height = 5.92f;
     float standardHeight = 5.92f;
     float liftingHeight = 9;
@@ -27,34 +28,40 @@ public class TimekeeperBehavior : MonoBehaviour
     public bool playerInZone1 = false;
     public bool playerInZone2 = false;
     public bool playerInZone3 = false;
-        
+    public bool playerInZone4 = false;
 
     public Transform dropOffTarget;
     public Transform zone1Target;
     public Transform zone2Target;
     public Transform zone3Target;
-
+    public Transform zone4Target;
     public FixedJoint currentConnectJoint;
+
+    public AudioSource hookSound;
+
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        targetHeight = standardHeight;
+        targetHeight = liftingHeight;
         _player = GameObject.FindGameObjectWithTag("Player").transform;
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (trackMonkey)
-        {
-            MoveToMonkey();
-        }
+
+    }
+
+    private void FixedUpdate()
+    {
 
 
-        if (monkeyInZone1 || monkeyInZone2 || monkeyInZone3 || playerInZone1 || playerInZone2 || playerInZone3)
+
+        if (monkeyInZone1 || monkeyInZone2 || monkeyInZone3 || playerInZone1 || playerInZone2 || playerInZone3 || playerInZone4)
         {
             monkeyNeedsSavingFlag = true;
         }
@@ -63,21 +70,21 @@ public class TimekeeperBehavior : MonoBehaviour
             monkeyNeedsSavingFlag = false;
         }
 
-        if(monkeyNeedsSavingFlag && !hookedMonkey)
+        if (monkeyNeedsSavingFlag && !hookedMonkey)
         {
             MoveToSandZone();
         }
-        if(hookedMonkey)
+        if (hookedMonkey)
         {
             trackMonkey = false;
             MoveToDropOff();
         }
 
         SetHeight();
-    }
-
-    private void FixedUpdate()
-    {
+        if (transform.position.y < targetHeight)
+        {
+            RestingSetPosition();
+        }
 
         if (hookedMonkey)
         {
@@ -117,46 +124,49 @@ public class TimekeeperBehavior : MonoBehaviour
 
             newPosition = Vector3.MoveTowards(transform.position, zone1Target.position, moveSpeed * Time.deltaTime);
         }
-        else if(playerInZone2)
+        else if (playerInZone2)
         {
             newPosition = Vector3.MoveTowards(transform.position, zone2Target.position, moveSpeed * Time.deltaTime);
 
+
         }
+
         else if (playerInZone3)
         {
             newPosition = Vector3.MoveTowards(transform.position, zone2Target.position, moveSpeed * Time.deltaTime);
 
+
         }
-        else if(monkeyInZone1)
+        else if (playerInZone4)
         {
-            newPosition = Vector3.MoveTowards(transform.position, zone1Target.position, moveSpeed * Time.deltaTime);
+            newPosition = Vector3.MoveTowards(transform.position, zone4Target.position, moveSpeed * Time.deltaTime);
 
 
         }
-        else if(monkeyInZone2)
-        {
-            newPosition = Vector3.MoveTowards(transform.position, zone2Target.position, moveSpeed * Time.deltaTime);
+        else {
+            if (monkeyInZone1)
+            {
+                newPosition = Vector3.MoveTowards(transform.position, zone1Target.position, moveSpeed * Time.deltaTime);
 
-        }
-        else if (monkeyInZone3)
-        {
-            newPosition = Vector3.MoveTowards(transform.position, zone3Target.position, moveSpeed * Time.deltaTime);
 
+            }
+            else if (monkeyInZone2)
+            {
+                newPosition = Vector3.MoveTowards(transform.position, zone2Target.position, moveSpeed * Time.deltaTime);
+
+            }
+            else if (monkeyInZone3)
+            {
+                newPosition = Vector3.MoveTowards(transform.position, zone3Target.position, moveSpeed * Time.deltaTime);
+
+            }
         }
+
 
         newPosition.y = height;
-        transform.position = newPosition;
+        rb.MovePosition(newPosition);
 
 
-
-    }
-
-    void MoveToMonkey()
-    {
-        targetHeight = standardHeight;
-        Vector3 newPosition = Vector3.MoveTowards(transform.position,_player.position,moveSpeed * Time.deltaTime);
-        newPosition.y = height;
-        transform.position = newPosition;
 
     }
 
@@ -164,9 +174,14 @@ public class TimekeeperBehavior : MonoBehaviour
 
     void SetHookAtBallHeight()
     {
+        Vector3 targetHookHeight;
 
 
-        Vector3 targetHookHeight = new Vector3(0, (rodEndPoint.position.y - _player.position.y) - 1f, 0);
+
+            targetHookHeight = new Vector3(0, 8.75f, 0);
+
+
+
         hookJoint.anchor = Vector3.MoveTowards(hookJoint.anchor, targetHookHeight, 1.25f * Time.fixedDeltaTime);
 
     }
@@ -175,7 +190,7 @@ public class TimekeeperBehavior : MonoBehaviour
     {
         targetHeight = liftingHeight;
         Vector3 targetHookHeight = new Vector3(0, 2, 0);
-        hookJoint.anchor = Vector3.MoveTowards(hookJoint.anchor, targetHookHeight, Time.fixedDeltaTime * 1.5f);
+        hookJoint.anchor = Vector3.MoveTowards(hookJoint.anchor, targetHookHeight, Time.fixedDeltaTime * 2);
     }
 
     void SetHeight()
@@ -187,9 +202,10 @@ public class TimekeeperBehavior : MonoBehaviour
     void RestingSetPosition()
     {
 
-        Vector3 newPosition = Vector3.MoveTowards(transform.position, _player.position, moveSpeed * Time.deltaTime);
+        //Vector3 newPosition = Vector3.MoveTowards(transform.position, _player.position, moveSpeed * Time.deltaTime);
+        Vector3 newPosition = transform.position;
         newPosition.y = height;
-        transform.position = newPosition;
+        rb.MovePosition(newPosition);
     }
 
     private void MoveToDropOff()
@@ -198,12 +214,12 @@ public class TimekeeperBehavior : MonoBehaviour
         {
             Vector3 newPosition = Vector3.MoveTowards(transform.position, dropOffTarget.position, moveSpeed * Time.deltaTime *.5f);
             newPosition.y = height;
-            transform.position = newPosition;
+            rb.MovePosition(newPosition);
 
             Vector3 adjustedPosition = transform.position;
             adjustedPosition.y = dropOffTarget.position.y;
 
-            if(Vector3.Distance(adjustedPosition,dropOffTarget.position) < 1)
+            if(Vector3.Distance(adjustedPosition,dropOffTarget.position) < 2)
             {
 
                 DropOffCountdown();
@@ -213,10 +229,6 @@ public class TimekeeperBehavior : MonoBehaviour
                 dropOffClock = dropOffClockDefault;
             }
 
-        }
-        else
-        {
-            RestingSetPosition();
         }
 
 

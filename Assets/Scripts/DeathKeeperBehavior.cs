@@ -29,8 +29,15 @@ public class DeathKeeperBehavior : MonoBehaviour
     bool audioPlayed = false;
     public AudioSource gotchaAudio;
     public AudioSource crashAudio;
+    public AudioSource hookAudio;
 
     public GameObject crashScreen;
+
+    bool caught = false;
+    float offsetInterval = 1.5f;
+    float offsetTimer = 0;
+    Vector3 currentOffset= Vector3.zero;
+    PlayerIsCrashing playerIsCrashing;
 
 
 
@@ -39,6 +46,7 @@ public class DeathKeeperBehavior : MonoBehaviour
     {
         targetHeight = standardHeight;
         _player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerIsCrashing = FindObjectOfType<PlayerIsCrashing>();
 
     }
 
@@ -48,6 +56,7 @@ public class DeathKeeperBehavior : MonoBehaviour
         if (trackMonkey)
         {
             MoveToMonkey();
+            RandomizeOffset();
         }
 
         if(hookedMonkey && poisonActive)
@@ -83,6 +92,20 @@ public class DeathKeeperBehavior : MonoBehaviour
 
     }
 
+    void RandomizeOffset ()
+    {
+        Vector3.Lerp(currentOffset, arbitraryOffset, offsetTimer * 1.35f);
+        offsetTimer += Time.deltaTime;
+
+
+        if(offsetTimer >= offsetInterval)
+        {
+            currentOffset = arbitraryOffset;
+            arbitraryOffset = new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+            offsetTimer = 0;
+        }
+    }
+
     void ReelInMonkey()
     {
         targetHeight = liftingHeight;
@@ -96,7 +119,7 @@ public class DeathKeeperBehavior : MonoBehaviour
 
 
         targetHeight = _player.position.y + 4.64f;
-        Vector3 newPosition = Vector3.MoveTowards(transform.position, _player.position + arbitraryOffset, moveSpeed * Time.deltaTime);
+        Vector3 newPosition = Vector3.MoveTowards(transform.position, _player.position + currentOffset, moveSpeed * Time.deltaTime);
         newPosition.y = height;
         transform.position = newPosition;
 
@@ -108,7 +131,7 @@ public class DeathKeeperBehavior : MonoBehaviour
     {
 
 
-        Vector3 targetHookHeight = new Vector3(0,6.25f, 0);
+        Vector3 targetHookHeight = new Vector3(0,6f, 0);
         hookJoint.anchor = Vector3.MoveTowards(hookJoint.anchor, targetHookHeight, 1.25f * Time.fixedDeltaTime);
 
     }
@@ -117,7 +140,7 @@ public class DeathKeeperBehavior : MonoBehaviour
     {
         
         height = Mathf.MoveTowards(height, targetHeight, Time.deltaTime);
-        if(hookedMonkey && height > 8 && poisonActive)
+        if(hookedMonkey && height > 8 && poisonActive && caught == false)
         {
 
             StartCoroutine(CrashScreenPlay());
@@ -140,11 +163,17 @@ public class DeathKeeperBehavior : MonoBehaviour
 
     IEnumerator CrashScreenPlay()
     {
+
+        caught = true;
         crashScreen.SetActive(true);
-        crashAudio.Play();
-        yield return new WaitForSeconds(1);
 
-
+        yield return new WaitForSeconds(.5f);
+        if (!playerIsCrashing.isCrashing)
+        {
+            crashAudio.Play();
+            playerIsCrashing.isCrashing = true;
+        }
+        yield return new WaitForSeconds(.6f);
         Application.Quit();
         yield break;
 
